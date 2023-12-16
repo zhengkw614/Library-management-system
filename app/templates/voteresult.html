@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block card_header %}
+<span><a href="/index"> 投票问卷 / </a></span><span>投票结果</span>
+{% endblock %}
+
+
+{% block card_body %}
+
+<div class="layui-bg-gray" style="padding: 30px;">
+    <div class="layui-panel">
+        <div>标题： {{vote.title}}</div>
+        <div>内容： {{vote.content}}</div>
+        <div>可选： {{vote.max_choice}} 个选项</div>
+        <div>截止时间： {{vote.end_time}}</div>
+        <div>起始时间： {{vote.start_time}}</div>
+        <div>选项： </div>
+        {% for item in choices %}
+            <div>{{item.no}}： {{item.choice}} -- 选择人数: {{item.count}}</div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+
+<script src="../static/layui/layui.js"></script>
+<script>
+layui.use(['layer'], function(){
+    var layer = layui.layer
+    {% for message in get_flashed_messages() %}
+        layer.msg('{{ message }}');
+    {% endfor %}
+});
+
+layui.use('form', function(){
+  var form = layui.form;
+});
+
+layui.use('laydate', function(){
+    var laydate = layui.laydate;
+
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#enddate', //指定元素
+        type: 'datetime'
+    });
+});
+</script>
+
+<script>
+    var choices = '';
+    var index = 1;
+    $("#addchoice").on('click',function (){
+        if($("#choiceinput").val() != '')
+        {
+            choices = choices + $("#choiceinput").val() + '^';
+            console.log(choices);
+            $("#newchoices").append('<p>' + '选项' + index.toString() + ': ' + $("#choiceinput").val() + '</p>')
+            $("#subchoices").val(choices);
+            $("#choiceinput").val('');
+            index++;
+        }
+    })
+</script>
+{% endblock %}

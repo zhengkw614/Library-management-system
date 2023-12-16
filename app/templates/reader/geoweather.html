@@ -1,0 +1,100 @@
+{% extends 'reader/base.html' %}
+
+{% block card_header %}
+<span><a href="/index"> 位置天气 / </a></span><span>位置天气</span>
+{% endblock %}
+
+
+{% block card_body %}
+    <div class="layui-row my-weather" style="height: 120px; width: 100%">
+        <div class="layui-row layui-col-md2">
+            <div style="text-align: center; padding: 10px 0">
+                <h2>成都天气</h2>
+                <p id="today" style="color: #2D93CA; padding: 5px 0"></p>
+            </div>
+        </div>
+        <div class="layui-row layui-col-md2">
+            <div class="layui-row">
+                <div class="layui-row layui-col-md6">
+                    <img src="../static/weather/icons/301.svg" alt="QWeather1" width="48" height="48" id="Qweather1">
+                </div>
+                <div class="layui-row layui-col-md6">
+                    <p id="day1"></p>
+                    <p id="temp1"></p>
+                    <p id="wind1"></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-col-md2">
+            <div class="layui-row">
+                <div class="layui-row layui-col-md6">
+                    <img src="../static/weather/icons/301.svg" alt="QWeather2" width="48" height="48" id="Qweather2">
+                </div>
+                <div class="layui-row layui-col-md6">
+                    <p id="day2"></p>
+                    <p id="temp2"></p>
+                    <p id="wind2"></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-col-md2">
+            <div class="layui-row">
+                <div class="layui-row layui-col-md6">
+                    <img src="../static/weather/icons/301.svg" alt="QWeather3" width="48" height="48" id="Qweather3">
+                </div>
+                <div class="layui-row layui-col-md6">
+                    <p id="day3"></p>
+                    <p id="temp3"></p>
+                    <p id="wind3"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-map" style="width: 100%; height: 650px">
+        <iframe width=100% height=100% frameborder=0 scrolling=auto src="{{url_for('reader.geoweatherframe')}}"></iframe>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+<script src="../static/layui/layui.js"></script>
+<script>
+layui.use(['layer'], function(){
+    var layer = layui.layer
+    {% for message in get_flashed_messages() %}
+        layer.msg('{{ message }}');
+    {% endfor %}
+});
+
+layui.use('form', function(){
+  var form = layui.form;
+});
+
+$.get("{{ url_for('reader.weather_api') }}", function (res){
+    console.log(res.days)
+    var day1 = res.days[0]
+    var day2 = res.days[1]
+    var day3 = res.days[2]
+    var url = 'http://127.0.0.1:5000/static/weather/icons/' + day1.icon + '.svg'
+    console.log(url)
+    $("#Qweather1").attr("src", url)
+    $("#day1").text(day1.day)
+    $("#temp1").text(day1.tempmin + ' ~ ' + day1.tempmax + '°C')
+    $("#wind1").text(day1.wind)
+    $("#today").text(day1.sky)
+
+    var url = 'http://127.0.0.1:5000/static/weather/icons/' + day2.icon + '.svg'
+    $("#Qweather2").attr('src', url)
+    $("#day2").text(day2.day)
+    $("#temp2").text(day2.tempmin + ' ~ ' + day2.tempmax + '°C')
+    $("#wind2").text(day2.wind)
+
+    var url = 'http://127.0.0.1:5000/static/weather/icons/' + day3.icon + '.svg'
+    $("#Qweather3").attr('src', url)
+    $("#day3").text(day3.day)
+    $("#temp3").text(day3.tempmin + ' ~ ' + day3.tempmax + '°C')
+    $("#wind3").text(day3.wind)
+})
+</script>
+
+{% endblock %}

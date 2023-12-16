@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block card_header %}
+<span><a href="/index"> 日志系统 / </a></span><span>系统日志</span>
+{% endblock %}
+
+
+{% block card_body %}
+    <div class="layui-bg-gray" style="padding: 30px;">
+        <div class="layui-row layui-col-space15">
+            {% for item in logs %}
+                <div class="layui-col-md10">
+                    <div class="layui-panel">
+                        <div style="padding: 5px 5px;">{{ item.date }}  {{ item.content }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+
+<script src="../static/layui/layui.js"></script>
+<script>
+layui.use(['layer'], function(){
+    var layer = layui.layer
+    {% for message in get_flashed_messages() %}
+        layer.msg('{{ message }}');
+    {% endfor %}
+});
+
+layui.use('form', function(){
+  var form = layui.form;
+});
+</script>
+{% endblock %}
